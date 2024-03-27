@@ -10,7 +10,7 @@
     "build": "tsup src/index.ts"
   },
   "dependencies": {
-    "@bogeychan/elysia-logger": "^0.0.19",
+    "@bogeychan/elysia-logger": "^0.0.20",
     "@elysiajs/graphql-yoga": "^1.0.2",
     "elysia": "latest",
     "unify-errors": "^1.2.226"
