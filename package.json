@@ -17,8 +17,8 @@
   },
   "devDependencies": {
     "@elysiajs/eden": "^1.0.6",
-    "@typescript-eslint/eslint-plugin": "6.19.0",
-    "@typescript-eslint/parser": "6.19.0",
+    "@typescript-eslint/eslint-plugin": "6.21.0",
+    "@typescript-eslint/parser": "6.21.0",
     "bun-types": "latest",
     "eslint": "8.57.0",
     "eslint-config-prettier": "9.1.0",
