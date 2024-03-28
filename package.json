@@ -1,6 +1,10 @@
 {
   "name": "unify-elysia-gql",
-  "version": "1.0.0",
+  "version": "1.0.1",
+  "files": [
+    "dist",
+    "src"
+  ],
   "main": "./dist/index.js",
   "typings": "dist/index.d.ts",
   "scripts": {
