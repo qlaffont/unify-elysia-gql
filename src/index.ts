@@ -4,7 +4,6 @@ import type { createPinoLogger } from '@bogeychan/elysia-logger';
 import { GraphQLError } from 'graphql';
 import {
   BadRequest,
-  CustomError,
   Forbidden,
   InternalServerError,
   NotFound,
@@ -33,7 +32,6 @@ export const pluginUnifyElysiaGraphQL = (
   const config: PluginUnifyElysiaGraphQL = {
     ...defaultConfig,
     ...userConfig,
-    logInstance: console,
   };
 
   const handleQueryAndResolver =
@@ -46,39 +44,40 @@ export const pluginUnifyElysiaGraphQL = (
       } catch (error: CustomError | Error) {
         let statusCodeToSend = 200;
 
-        if (!config.disableLog && config.logInstance) {
+        if (!config.disableLog && !!config.logInstance) {
+          console.log('LOG INSTANCE 1', config.logInstance);
           config.logInstance.error(error);
         }
 
-        if (error && error instanceof CustomError) {
+        if (error && 'context' in error) {
           let httpCode = 0;
 
-          switch (error.constructor) {
-            case BadRequest: {
+          switch (error.name) {
+            case BadRequest.name: {
               httpCode = 400;
               break;
             }
-            case Unauthorized: {
+            case Unauthorized.name: {
               httpCode = 401;
               break;
             }
-            case Forbidden: {
+            case Forbidden.name: {
               httpCode = 403;
               break;
             }
-            case NotFound: {
+            case NotFound.name: {
               httpCode = 404;
               break;
             }
-            case TimeOut: {
+            case TimeOut.name: {
               httpCode = 408;
               break;
             }
-            case InternalServerError: {
+            case InternalServerError.name: {
               httpCode = 500;
               break;
             }
-            case NotImplemented: {
+            case NotImplemented.name: {
               httpCode = 501;
               break;
             }

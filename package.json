@@ -1,6 +1,6 @@
 {
   "name": "unify-elysia-gql",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "files": [
     "dist",
     "src"
@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@bogeychan/elysia-logger": "^0.0.20",
-    "unify-errors": "^1.2.226"
+    "unify-errors": "^1.2.229"
   },
   "devDependencies": {
     "@elysiajs/eden": "^1.0.6",
