@@ -1,6 +1,6 @@
 {
   "name": "unify-elysia-gql",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "files": [
     "dist",
     "src"
@@ -13,16 +13,18 @@
     "lint": "eslint src test",
     "build": "tsup src/index.ts"
   },
+  "peerDependencies": {
+    "elysia": "latest"
+  },
   "dependencies": {
     "@bogeychan/elysia-logger": "^0.0.20",
-    "@elysiajs/graphql-yoga": "^1.0.2",
-    "elysia": "latest",
     "unify-errors": "^1.2.226"
   },
   "devDependencies": {
     "@elysiajs/eden": "^1.0.6",
     "@typescript-eslint/eslint-plugin": "7.5.0",
     "@typescript-eslint/parser": "7.5.0",
+    "@elysiajs/graphql-yoga": "^1.0.2",
     "bun-types": "latest",
     "eslint": "8.57.0",
     "eslint-config-prettier": "9.1.0",
