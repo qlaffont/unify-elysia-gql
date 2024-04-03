@@ -45,7 +45,6 @@ export const pluginUnifyElysiaGraphQL = (
         let statusCodeToSend = 200;
 
         if (!config.disableLog && !!config.logInstance) {
-          console.log('LOG INSTANCE 1', config.logInstance);
           config.logInstance.error(error);
         }
 
