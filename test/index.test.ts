@@ -66,8 +66,9 @@ describe('Unify Elysia GQL', () => {
       'InternalServerError',
       'NotImplemented',
       'CustomError',
+      'TooManyRequests',
     ];
-    const errorsStatusCode = [400, 401, 403, 404, 408, 500, 501, 500];
+    const errorsStatusCode = [400, 401, 403, 404, 408, 500, 501, 500, 429];
 
     for (const [errorIndex, errorType] of errors.entries()) {
       await testGraphQL(

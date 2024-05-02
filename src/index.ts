@@ -9,6 +9,7 @@ import {
   NotFound,
   NotImplemented,
   TimeOut,
+  TooManyRequests,
   Unauthorized,
 } from 'unify-errors';
 
@@ -70,6 +71,10 @@ export const pluginUnifyElysiaGraphQL = (
             }
             case TimeOut.name: {
               httpCode = 408;
+              break;
+            }
+            case TooManyRequests.name: {
+              httpCode = 429;
               break;
             }
             case InternalServerError.name: {

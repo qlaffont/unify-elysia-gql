@@ -9,6 +9,7 @@ import {
   NotFound,
   NotImplemented,
   TimeOut,
+  TooManyRequests,
   Unauthorized,
 } from 'unify-errors';
 
@@ -37,6 +38,7 @@ export const app = (config?: PluginUnifyElysiaGraphQL) => {
             CustomError: String!
             Success: String!
             testOtherError: String!
+            TooManyRequests: String!
           }
         `,
         resolvers: {
@@ -51,6 +53,7 @@ export const app = (config?: PluginUnifyElysiaGraphQL) => {
               TimeOut,
               InternalServerError,
               NotImplemented,
+              TooManyRequests,
             ].reduce(
               (prev, errorType) => ({
                 ...prev,
