@@ -17,7 +17,7 @@
     "elysia": "latest"
   },
   "dependencies": {
-    "@bogeychan/elysia-logger": "^0.0.21",
+    "@bogeychan/elysia-logger": "^0.0.22",
     "unify-errors": "^1.3.0"
   },
   "devDependencies": {
