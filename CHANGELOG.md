@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.1.15 (2024-07-11)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @bogeychan/elysia-logger to ^0.1.0 ([4db3465](https://github.com/qlaffont/unify-elysia-gql/commit/4db3465d3cc5b9936f07bbeb26b6b1d2b963075d))
+
 ### 1.1.14 (2024-07-08)
 
 ### 1.1.13 (2024-07-02)
