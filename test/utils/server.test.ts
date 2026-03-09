@@ -16,12 +16,24 @@ import {
 import { PluginUnifyElysiaGraphQL, pluginUnifyElysiaGraphQL } from '../../src';
 
 export const app = (config?: PluginUnifyElysiaGraphQL) => {
-  const { handleQueryAndResolver } = pluginUnifyElysiaGraphQL(config);
+  const { handleQueryAndResolver, handleQueriesAndResolvers } =
+    pluginUnifyElysiaGraphQL(config);
+
+  const [handleGraphqlValidationError, handleTooManyRequestsMessage] =
+    handleQueriesAndResolvers([
+      () => {
+        throw new Error('graphql validation error');
+      },
+      () => {
+        throw new Error('too many requests');
+      },
+    ] as []);
 
   const server = new Elysia()
     .use(
       logger({
         level: 'error',
+        autoLogging: false,
       }),
     )
     .use(
@@ -39,6 +51,8 @@ export const app = (config?: PluginUnifyElysiaGraphQL) => {
             Success: String!
             testOtherError: String!
             TooManyRequests: String!
+            testGraphqlValidationError: String!
+            testTooManyRequestsMessage: String!
           }
         `,
         resolvers: {
@@ -76,6 +90,8 @@ export const app = (config?: PluginUnifyElysiaGraphQL) => {
             testOtherError: handleQueryAndResolver(() => {
               throw new Error('test');
             }),
+            testGraphqlValidationError: handleGraphqlValidationError,
+            testTooManyRequestsMessage: handleTooManyRequestsMessage,
           },
         },
       }),

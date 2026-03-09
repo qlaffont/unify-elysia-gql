@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/ban-ts-comment */
 import type { createPinoLogger } from '@bogeychan/elysia-logger';
 import { GraphQLError } from 'graphql';
 import {
@@ -36,12 +34,11 @@ export const pluginUnifyElysiaGraphQL = (
   };
 
   const handleQueryAndResolver =
-    (resolver: (...args: any) => any | Promise<any>) =>
-    async (...args: any) => {
+    (resolver: (...args: unknown[]) => unknown | Promise<unknown>) =>
+    async (...args: unknown[]) => {
       try {
         return await resolver(...args);
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        //@ts-ignore
+        // @ts-ignore
       } catch (error: CustomError | Error) {
         let statusCodeToSend = 200;
 

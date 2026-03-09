@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import { beforeAll, describe, expect, it } from 'bun:test';
+import { beforeAll, describe, expect, it, jest } from 'bun:test';
 import Elysia from 'elysia';
 import * as UnifyErrors from 'unify-errors';
 
@@ -173,5 +173,44 @@ describe('Unify Elysia GQL', () => {
         issue: 'This is the issue',
       },
     });
+  });
+
+  it('should call logInstance on error', async () => {
+    const logInstance = { error: jest.fn() };
+    //@ts-ignore
+    const customApp: Elysia = app({ logInstance });
+
+    await testGraphQL(
+      customApp,
+      `query { BadRequest }`,
+      { data: null, errors: [{ message: 'Bad Request' }] },
+      400,
+    );
+
+    expect(logInstance.error).toHaveBeenCalledTimes(1);
+  });
+
+  it('should handle graphql validation error message', async () => {
+    await testGraphQL(
+      currentApp,
+      `query { testGraphqlValidationError }`,
+      {
+        data: null,
+        errors: [{ message: 'graphql validation error' }],
+      },
+      500,
+    );
+  });
+
+  it('should handle too many requests message in non-unify error', async () => {
+    await testGraphQL(
+      currentApp,
+      `query { testTooManyRequestsMessage }`,
+      {
+        data: null,
+        errors: [{ message: 'too many requests' }],
+      },
+      500,
+    );
   });
 });
