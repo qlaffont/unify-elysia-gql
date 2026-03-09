@@ -34,8 +34,8 @@ export const pluginUnifyElysiaGraphQL = (
   };
 
   const handleQueryAndResolver =
-    (resolver: (...args: unknown[]) => unknown | Promise<unknown>) =>
-    async (...args: unknown[]) => {
+    <T>(resolver: (...args: unknown[]) => T | Promise<T>) =>
+    async (...args: unknown[]): Promise<T> => {
       try {
         return await resolver(...args);
         // @ts-ignore
@@ -118,10 +118,10 @@ export const pluginUnifyElysiaGraphQL = (
       }
     };
 
-  const handleQueriesAndResolvers = (queries: []) => {
-    return queries.map((query) => {
-      return handleQueryAndResolver(query);
-    });
+  const handleQueriesAndResolvers = <T>(
+    queries: Array<(...args: unknown[]) => T | Promise<T>>,
+  ) => {
+    return queries.map((query) => handleQueryAndResolver(query));
   };
 
   return { handleQueryAndResolver, handleQueriesAndResolvers };

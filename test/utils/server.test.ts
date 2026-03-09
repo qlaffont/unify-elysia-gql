@@ -20,14 +20,14 @@ export const app = (config?: PluginUnifyElysiaGraphQL) => {
     pluginUnifyElysiaGraphQL(config);
 
   const [handleGraphqlValidationError, handleTooManyRequestsMessage] =
-    handleQueriesAndResolvers([
+    handleQueriesAndResolvers<string>([
       () => {
         throw new Error('graphql validation error');
       },
       () => {
         throw new Error('too many requests');
       },
-    ] as []);
+    ]);
 
   const server = new Elysia()
     .use(

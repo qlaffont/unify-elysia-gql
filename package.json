@@ -13,7 +13,7 @@
     "prepare": "bunup",
     "test": "bun test --coverage",
     "test:watch": "bun test --watch",
-    "lint": "oxlint src",
+    "lint": "tsc --noEmit && oxlint src",
     "format": "oxfmt src"
   },
   "husky": {
