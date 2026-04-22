@@ -1,10 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import { beforeAll, describe, expect, it, jest } from 'bun:test';
-import Elysia from 'elysia';
-import * as UnifyErrors from 'unify-errors';
+import { beforeAll, describe, expect, it, jest } from "bun:test";
+import Elysia from "elysia";
 
-import { app } from './utils/server.test';
+import { app } from "./utils/server.test";
 
 const testGraphQL = async (
   server: Elysia,
@@ -19,11 +18,11 @@ const testGraphQL = async (
 
   await server
     .handle(
-      new Request('http://localhost/graphql', {
-        method: 'POST',
+      new Request("http://localhost/graphql", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'Content-Length': body.length.toString(),
+          "Content-Type": "application/json",
+          "Content-Length": body.length.toString(),
         },
         body,
       }),
@@ -35,7 +34,7 @@ const testGraphQL = async (
         content = await res.json();
         return;
         // eslint-disable-next-line no-empty
-      } catch (error) {}
+      } catch {}
 
       return;
     });
@@ -48,7 +47,7 @@ const testGraphQL = async (
   return content;
 };
 
-describe('Unify Elysia GQL', () => {
+describe("Unify Elysia GQL", () => {
   let currentApp: Elysia;
 
   beforeAll(() => {
@@ -56,19 +55,47 @@ describe('Unify Elysia GQL', () => {
     currentApp = app();
   });
 
-  it('should render error with a good format', async () => {
+  it("should render error with a good format", async () => {
     const errors = [
-      'BadRequest',
-      'Unauthorized',
-      'Forbidden',
-      'NotFound',
-      'TimeOut',
-      'InternalServerError',
-      'NotImplemented',
-      'CustomError',
-      'TooManyRequests',
+      "BadRequest",
+      "Unauthorized",
+      "Forbidden",
+      "NotFound",
+      "Conflict",
+      "TimeOut",
+      "InternalServerError",
+      "NotImplemented",
+      "ServiceUnavailable",
+      "CustomError",
+      "TooManyRequests",
     ];
-    const errorsStatusCode = [400, 401, 403, 404, 408, 500, 501, 500, 429];
+    const errorsStatusCode = [400, 401, 403, 404, 409, 408, 500, 501, 503, 500, 429];
+    const errorCodes = [
+      "BADREQUEST_CODE",
+      "UNAUTHORIZED_CODE",
+      "FORBIDDEN_CODE",
+      "NOTFOUND_CODE",
+      "CONFLICT_CODE",
+      "TIMEOUT_CODE",
+      "INTERNALSERVERERROR_CODE",
+      "NOTIMPLEMENTED_CODE",
+      "SERVICEUNAVAILABLE_CODE",
+      "CUSTOM_ERROR",
+      "TOOMANYREQUESTS_CODE",
+    ];
+    const errorMessages = [
+      "Bad Request",
+      "Unauthorized",
+      "Forbidden",
+      "Not Found",
+      "Conflict",
+      "Request Time-out",
+      "Internal Server Error",
+      "Not Implemented",
+      "Service Unavailable",
+      "Custom Error",
+      "Too Many Requests",
+    ];
 
     for (const [errorIndex, errorType] of errors.entries()) {
       await testGraphQL(
@@ -81,13 +108,11 @@ describe('Unify Elysia GQL', () => {
           data: null,
           errors: [
             {
-              message:
-                new UnifyErrors[errorType as 'BadRequest']().message ||
-                'Custom Error',
+              message: errorMessages[errorIndex],
               extensions: {
-                context: {
-                  issue: 'This is the issue',
-                },
+                code: errorCodes[errorIndex],
+                message: errorMessages[errorIndex],
+                details: ["This is the issue"],
               },
             },
           ],
@@ -97,7 +122,7 @@ describe('Unify Elysia GQL', () => {
     }
   });
 
-  it('should render not unifyerror', async () => {
+  it("should render not unifyerror", async () => {
     await testGraphQL(
       currentApp,
       `query {
@@ -108,7 +133,12 @@ describe('Unify Elysia GQL', () => {
         data: null,
         errors: [
           {
-            message: 'test',
+            message: "An unexpected error occured",
+            extensions: {
+              code: "INTERNAL_SERVER_ERROR",
+              message: "An unexpected error occured",
+              details: ["test"],
+            },
           },
         ],
       },
@@ -116,7 +146,7 @@ describe('Unify Elysia GQL', () => {
     );
   });
 
-  it('should render result', async () => {
+  it("should render result", async () => {
     await testGraphQL(
       currentApp,
       ` query {
@@ -125,14 +155,14 @@ describe('Unify Elysia GQL', () => {
         `,
       {
         data: {
-          Success: 'result',
+          Success: "result",
         },
       },
       200,
     );
   });
 
-  it('should be able to render result and error', async () => {
+  it("should be able to render result and error", async () => {
     await testGraphQL(
       currentApp,
       ` query {
@@ -141,14 +171,14 @@ describe('Unify Elysia GQL', () => {
         `,
       {
         data: {
-          Success: 'result',
+          Success: "result",
         },
       },
       200,
     );
   });
 
-  it('should hide extensions if option enable', async () => {
+  it("should hide extensions if option enable", async () => {
     //@ts-ignore
     const customApp: Elysia = app({ disableDetails: true });
 
@@ -162,20 +192,25 @@ describe('Unify Elysia GQL', () => {
         data: null,
         errors: [
           {
-            message: 'Bad Request',
+            message: "Bad Request",
+            extensions: {
+              code: "BADREQUEST_CODE",
+              message: "Bad Request",
+              details: [],
+            },
           },
         ],
       },
       400,
     );
-    expect(res.errors![0].extensions).toStrictEqual({
-      context: {
-        issue: 'This is the issue',
-      },
+    expect(res.errors![0].extensions).toMatchObject({
+      code: "BADREQUEST_CODE",
+      message: "Bad Request",
+      details: [],
     });
   });
 
-  it('should call logInstance on error', async () => {
+  it("should call logInstance on error", async () => {
     const logInstance = { error: jest.fn() };
     //@ts-ignore
     const customApp: Elysia = app({ logInstance });
@@ -183,34 +218,62 @@ describe('Unify Elysia GQL', () => {
     await testGraphQL(
       customApp,
       `query { BadRequest }`,
-      { data: null, errors: [{ message: 'Bad Request' }] },
+      {
+        data: null,
+        errors: [
+          {
+            message: "Bad Request",
+            extensions: {
+              code: "BADREQUEST_CODE",
+            },
+          },
+        ],
+      },
       400,
     );
 
     expect(logInstance.error).toHaveBeenCalledTimes(1);
   });
 
-  it('should handle graphql validation error message', async () => {
+  it("should handle graphql validation error message", async () => {
     await testGraphQL(
       currentApp,
       `query { testGraphqlValidationError }`,
       {
         data: null,
-        errors: [{ message: 'graphql validation error' }],
+        errors: [
+          {
+            message: "Bad Request",
+            extensions: {
+              code: "VALIDATION_ERROR",
+              message: "Bad Request",
+              details: ["graphql validation error"],
+            },
+          },
+        ],
       },
-      500,
+      400,
     );
   });
 
-  it('should handle too many requests message in non-unify error', async () => {
+  it("should handle too many requests message in non-unify error", async () => {
     await testGraphQL(
       currentApp,
       `query { testTooManyRequestsMessage }`,
       {
         data: null,
-        errors: [{ message: 'too many requests' }],
+        errors: [
+          {
+            message: "Too Many Requests",
+            extensions: {
+              code: "TOO_MANY_REQUESTS",
+              message: "Too Many Requests",
+              details: ["too many requests"],
+            },
+          },
+        ],
       },
-      500,
+      429,
     );
   });
 });
